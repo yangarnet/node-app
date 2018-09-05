@@ -3,19 +3,19 @@ const environments = {
     development: {
         httpPort: 3000,
         httpsPort: 3001,
-        hashingSecret: 'HHHKKJKLGU4545HH',
+        hashingSecret: "HHHKKJKLGU4545HH",
         maxChecks: 5
     },
     stage: {
         httpPort: 3005,
         httpsPort: 3006,
-        hashingSecret: 'HHHKKJKL#$%$GU4545HH',
+        hashingSecret: "HHHKKJKL#$%$GU4545HH",
         maxChecks: 5
     },
     production: {
         httpPort: 5000,
         httpsPort: 5002,
-        hashingSecret: 'HHHK5-=--KJKLGU4545HH',
+        hashingSecret: "HHHK5-=--KJKLGU4545HH",
         maxChecks: 5
     }
 };

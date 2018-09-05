@@ -2,7 +2,7 @@
 const StringDecoder = require("string_decoder").StringDecoder;
 const url = require("url");
 
-const helpers = require('../../utils/helpers');
+const helpers = require("../../utils/helpers");
 const handlers = require("./handler/Index");
 
 // define the router configuration here
@@ -17,7 +17,6 @@ const routerConfig = {
 };
 
 const router = (req, res) => {
-
     // request method
     const method = req.method.toLowerCase();
     // get the request header
@@ -30,7 +29,6 @@ const router = (req, res) => {
     // get the path name from parsedUrl
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, "");
-
 
     /* ------- get the payload from the request , after getting the payload, select handlers */
     // get the payload from the request, we need the string coder to decode buffer
@@ -46,9 +44,9 @@ const router = (req, res) => {
 
         // select the handler base on the trimmed path
         const selectedHandler =
-        typeof routerConfig[trimmedPath] !== "undefined"
-            ? routerConfig[trimmedPath]
-            : handlers.notFound;
+            typeof routerConfig[trimmedPath] !== "undefined"
+                ? routerConfig[trimmedPath]
+                : handlers.notFound;
 
         // the data object here contains important info to choose property handler
         const data = {

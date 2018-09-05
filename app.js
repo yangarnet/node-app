@@ -1,6 +1,5 @@
-
-const server = require('./server/server');
-const worker = require('./worker/worker');
+const server = require("./server/server");
+const worker = require("./worker/worker");
 
 const app = {};
 

@@ -1,8 +1,7 @@
-
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
-const path = require('path');
+const path = require("path");
 
 const config = require("./config/config");
 const createServer = require("./create-server");
@@ -15,12 +14,13 @@ server.httpServer = http.createServer((req, res) => createServer(req, res));
 
 // key and cert configration for https server
 server.httpsServerOption = {
-    key: fs.readFileSync(path.join(__dirname,"../https-key/key.pem")),
-    cert: fs.readFileSync(path.join(__dirname,"../https-key/cert.pem"))
+    key: fs.readFileSync(path.join(__dirname, "../https-key/key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "../https-key/cert.pem"))
 };
 
-server.httpsServer = https.createServer(server.httpsServerOption, (req, res) => createServer(req, res));
-
+server.httpsServer = https.createServer(server.httpsServerOption, (req, res) =>
+    createServer(req, res)
+);
 
 /* the folliowing is show how to has password*/
 // const crypto = require('crypto');
@@ -38,6 +38,5 @@ server.init = () => {
     server.httpsServer.listen(config.httpsPort, () => {
         console.log(`the https server running @ ${config.httpsPort}\n\n`);
     });
-
-}
+};
 module.exports = server;
