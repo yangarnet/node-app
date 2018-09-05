@@ -3,6 +3,7 @@ const helper = require("../../../utils/helpers");
 
 const token_handler = {
     // verify if a token is still valid for a user when getting user informaiton!
+    // verify a valid token by token id and user phone.
     verifyToken: (id, phone, callback) => {
         _data.read("tokens", id, (err, tokenData) => {
             if (!err && tokenData) {

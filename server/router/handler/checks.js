@@ -1,6 +1,7 @@
 const _data = require("../../../lib/data");
 const config = require("../../config/config");
 const helper = require("../../../utils/helpers");
+const token_handler = require("./tokens");
 
 const check_handler = {
     /*require chedk data: protocl, url, method, successcode, timeout secoonds */
@@ -88,7 +89,39 @@ const check_handler = {
         } else {
             callback(400, { error: "request payload is invalid" });
         }
-    }
+    },
+
+    /* take check id as query param*/
+    get: (data, callback) => {
+        const { checkId } = data.query;
+        // we need token verification here as well.
+        if (checkId) {
+            _data.read("checks", checkId, (err, checkData) => {
+                if (!err && checkData) {
+                    const token =
+                        typeof data.headers.token === "string"
+                            ? data.headers.token
+                            : false;
+                    token_handler.verifyToken(
+                        token,
+                        checkData.userPhone,
+                        isValidToken => {
+                            if (isValidToken) {
+                                callback(200, checkData);
+                            } else {
+                                callback(403, { error: "invalid token" });
+                            }
+                        }
+                    );
+                }
+            });
+        } else {
+            callback(400, { error: "plz provider a valide check id" });
+        }
+    },
+
+    delete: (data, callback) => {},
+    put: (data, callback) => {}
 };
 
 module.exports = check_handler;
