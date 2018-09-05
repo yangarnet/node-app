@@ -120,8 +120,24 @@ const check_handler = {
         }
     },
 
-    delete: (data, callback) => {},
-    put: (data, callback) => {}
+    /* require data: checkId*/
+    delete: (data, callback) => {
+        const { checkId } = data.query;
+        // will need user verification as well
+    },
+
+    /* require data: checkId*/
+    put: (data, callback) => {
+        const { checkId } = data.query;
+        const {
+            protocol,
+            url,
+            method,
+            successCode,
+            timeoutSeconds
+        } = data.payload;
+        // will need user verification as well
+    }
 };
 
 module.exports = check_handler;
