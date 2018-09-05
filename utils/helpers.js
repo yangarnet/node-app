@@ -23,7 +23,8 @@ const helpers = {
     createRandomString: len => {
         len = typeof len === "number" && len > 0 ? len : false;
         if (len) {
-            const characterSet = "agsdgGYUHUJIKLJNBHVGJFHJGVHGH987686567726907";
+            const characterSet =
+                "agsdgGYUHUJIKLJNBHryuifgfgVGJFHJGVHGH9876865HJGTRTRTV67726907HUIHJKHJH";
             let str = "";
             while (str.length < len) {
                 const randomChar = characterSet.charAt(
