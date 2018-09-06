@@ -4,7 +4,10 @@ const environments = {
         httpPort: 3000,
         httpsPort: 3001,
         hashingSecret: "HHHKKJKLGU4545HH",
-        maxChecks: 5
+        maxChecks: 5,
+        twilio: {
+            phone: '0405070970'
+        }
     },
     stage: {
         httpPort: 3005,

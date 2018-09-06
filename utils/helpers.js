@@ -57,8 +57,10 @@ const helpers = {
 };
 
 // what abput send email
-helpers.sendTwiliosSms = (phone, msg, callback) => {
+helpers.sendTwilioSms = (phone, msg, callback) => {
     ///validation on phone and msg
+    phone = typeof phone === 'string' ? phone.trim() : false;
+    msg = (typeof phone === 'string'&&phone.length > 0) ? phone.trim() : false;
     if (phone && msg) {
         //config the request payload
         const payload = {
@@ -73,7 +75,7 @@ helpers.sendTwiliosSms = (phone, msg, callback) => {
             protocol: "https:",
             hostname: "api.twilio.com",
             method: "POST",
-            path: "your twiliopath",
+            path: "your twiliopath", // you will need to register with twilio
             auth: "your auto token",
             headers: {
                 "Content-Type": "application/json",
