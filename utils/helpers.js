@@ -2,8 +2,11 @@
 const crypto = require("crypto");
 const querystring = require("querystring");
 const https = require("https");
-
+const fs = require("fs");
+const path = require("path");
 const config = require("../server/config/config");
+const CONTENT_HTML = "HTML";
+const CONTENT_JSON = "JSON";
 
 const helpers = {
     // hashing a raw password
@@ -23,13 +26,10 @@ const helpers = {
     createRandomString: len => {
         len = typeof len === "number" && len > 0 ? len : false;
         if (len) {
-            const characterSet =
-                "agsdgGYUHUJIKLJNBHryuifgfgVGJFHJGVHGH9876865HJGTRTRTV67726907HUIHJKHJH";
+            const characterSet = "agsdgGYUHUJIKLJNBHryuifgfgVGJFHJGVHGH9876865HJGTRTRTV67726907HUIHJKHJH";
             let str = "";
             while (str.length < len) {
-                const randomChar = characterSet.charAt(
-                    Math.floor(Math.random() * characterSet.length)
-                );
+                const randomChar = characterSet.charAt(Math.floor(Math.random() * characterSet.length));
                 str += randomChar;
             }
             return str;
@@ -59,8 +59,8 @@ const helpers = {
 // what abput send email
 helpers.sendTwilioSms = (phone, msg, callback) => {
     ///validation on phone and msg
-    phone = typeof phone === 'string' ? phone.trim() : false;
-    msg = (typeof phone === 'string'&&phone.length > 0) ? phone.trim() : false;
+    phone = typeof phone === "string" ? phone.trim() : false;
+    msg = typeof phone === "string" && phone.length > 0 ? phone.trim() : false;
     if (phone && msg) {
         //config the request payload
         const payload = {
@@ -103,4 +103,18 @@ helpers.sendTwilioSms = (phone, msg, callback) => {
     }
 };
 
+helpers.loadHtml = (htmlTemplate, callback) => {
+    if (htmlTemplate) {
+        const htmlpath = path.join(__dirname, "/../views/");
+        fs.readFile(htmlpath + htmlTemplate + ".html", "utf8", (err, res) => {
+            if (!err && res && res.length > 0) {
+                callback(false, res);
+            } else {
+                callback(true, "no html template");
+            }
+        });
+    } else {
+        callback(400, { error: "invalid html template" }, CONTENT_JSON);
+    }
+};
 module.exports = helpers;

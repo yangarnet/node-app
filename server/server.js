@@ -18,9 +18,7 @@ server.httpsServerOption = {
     cert: fs.readFileSync(path.join(__dirname, "../https-key/cert.pem"))
 };
 
-server.httpsServer = https.createServer(server.httpsServerOption, (req, res) =>
-    createServer(req, res)
-);
+server.httpsServer = https.createServer(server.httpsServerOption, (req, res) => createServer(req, res));
 
 /* the folliowing is show how to has password*/
 // const crypto = require('crypto');

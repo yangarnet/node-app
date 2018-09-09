@@ -7,6 +7,16 @@ const handlers = require("./handler/Index");
 
 // define the router configuration here
 const routerConfig = {
+    // add new routes to server html
+    "": handlers.index,
+    "account/create": handlers.accountCreate,
+    "account/edit": handlers.accountEdit,
+    "account/delete": handlers.accountDelete,
+    "session/create": handlers.sessionCreate,
+    "session/deleted": handlers.sessionDeleted,
+    "checks/all": handlers.checkList,
+    "checks/create": handlers.checkCreate,
+    "checks/edit": handlers.checkEdit,
     sample: handlers.sample,
     ping: handlers.ping,
     users: handlers.users,
@@ -43,10 +53,7 @@ const router = (req, res) => {
         buffer += decoder.end();
 
         // select the handler base on the trimmed path
-        const selectedHandler =
-            typeof routerConfig[trimmedPath] !== "undefined"
-                ? routerConfig[trimmedPath]
-                : handlers.notFound;
+        const selectedHandler = typeof routerConfig[trimmedPath] !== "undefined" ? routerConfig[trimmedPath] : handlers.notFound;
 
         // the data object here contains important info to choose property handler
         const data = {
@@ -58,13 +65,23 @@ const router = (req, res) => {
         };
 
         // run the handler
-        selectedHandler(data, (statusCode, payload) => {
+        selectedHandler(data, (statusCode, payload, contentType) => {
             statusCode = typeof statusCode == "number" ? statusCode : 400;
-            payload = typeof payload == "object" ? payload : {};
+            // default the content to be json
+            contentType = typeof contentType === "string" ? contentType : "JSON";
+            let payloadString;
 
-            const payloadString = JSON.stringify(payload);
+            if (contentType === "JSON") {
+                payload = typeof payload == "object" ? payload : {};
+                payloadString = JSON.stringify(payload);
+                res.setHeader("Content-Type", "application/json");
+            }
+            if (contentType === "HTML") {
+                payload = typeof payload == "string" ? payload : "";
+                payloadString = payload;
+                res.setHeader("Content-Type", "text/html");
+            }
 
-            res.setHeader("Content-Type", "application/json");
             res.writeHead(statusCode);
             // we MUST call res.end() on each response!
             res.end(payloadString);
