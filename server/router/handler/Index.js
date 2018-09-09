@@ -11,9 +11,24 @@ const handlers = {
     /* -----------------------html handler-----------------*/
     index: (data, callback) => {
         if (data.method === "get") {
-            helpers.loadHtml("index", (err, str) => {
+            const templateData = {
+                "head.title": "Uptime Monitoring - Made Simple",
+                "head.description":
+                    "We offer free, simple uptime monitoring for HTTP/HTTPS sites all kinds. When your site goes down, we'll send you a text to let you know",
+                "body.class": "index"
+            };
+            // Read in a template as a string
+            helpers.getTemplate("index", templateData, function(err, str) {
                 if (!err && str) {
-                    callback(200, str, CONTENT_HTML);
+                    // Add the universal header and footer
+                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
+                        if (!err && str) {
+                            // Return that page as HTML
+                            callback(200, str, CONTENT_HTML);
+                        } else {
+                            callback(500, undefined, CONTENT_HTML);
+                        }
+                    });
                 } else {
                     callback(500, undefined, CONTENT_HTML);
                 }

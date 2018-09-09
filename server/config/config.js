@@ -6,7 +6,13 @@ const environments = {
         hashingSecret: "HHHKKJKLGU4545HH",
         maxChecks: 5,
         twilio: {
-            phone: '0405070970'
+            phone: "0405070970"
+        },
+        templateGlobals: {
+            appName: "UptimeChecker",
+            companyName: "NotARealCompany, Inc.",
+            yearCreated: "2018",
+            baseUrl: "http://localhost:3000/"
         }
     },
     stage: {
@@ -23,14 +29,8 @@ const environments = {
     }
 };
 
-const currentEnv =
-    typeof process.env.NODE_ENV === "string"
-        ? process.env.NODE_ENV.toLowerCase()
-        : "";
+const currentEnv = typeof process.env.NODE_ENV === "string" ? process.env.NODE_ENV.toLowerCase() : "";
 
-const environmentToExport =
-    typeof environments[currentEnv] === "object"
-        ? environments[currentEnv]
-        : environments.development;
+const environmentToExport = typeof environments[currentEnv] === "object" ? environments[currentEnv] : environments.development;
 
 module.exports = environmentToExport;
