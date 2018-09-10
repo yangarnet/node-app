@@ -118,7 +118,7 @@ helpers.loadHtml = (htmlTemplate, callback) => {
     }
 };
 
-helpers.interpolate = function(str, data) {
+helpers.interpolate = (str, data) => {
     str = typeof str == "string" && str.length > 0 ? str : "";
     data = typeof data == "object" && data !== null ? data : {};
 
@@ -139,11 +139,12 @@ helpers.interpolate = function(str, data) {
     return str;
 };
 
-helpers.getTemplate = function(templateName, data, callback) {
+helpers.getTemplate = (templateName, data, callback) => {
     templateName = typeof templateName == "string" && templateName.length > 0 ? templateName : false;
     data = typeof data == "object" && data !== null ? data : {};
     if (templateName) {
         var templatesDir = path.join(__dirname, "/../views/");
+        // as is reading string, we need to set encoding: utf-8, otherwise leave it blank
         fs.readFile(templatesDir + templateName + ".html", "utf8", function(err, str) {
             if (!err && str && str.length > 0) {
                 // Do interpolation on the string
@@ -158,7 +159,7 @@ helpers.getTemplate = function(templateName, data, callback) {
     }
 };
 
-helpers.addUniversalTemplates = function(str, data, callback) {
+helpers.addUniversalTemplates = (str, data, callback) => {
     str = typeof str == "string" && str.length > 0 ? str : "";
     data = typeof data == "object" && data !== null ? data : {};
     // Get the header
@@ -178,6 +179,22 @@ helpers.addUniversalTemplates = function(str, data, callback) {
             callback("Could not find the header template");
         }
     });
+};
+
+helpers.loadStaticResource = (filename, callback) => {
+    if (filename) {
+        const staticRessourceDir = path.join(__dirname, '/../public');
+        // reading non string content, no need to set encoding here
+        fs.readFile(`${staticRessourceDir}/${filename}`, (err, data) => {
+            if (!err && data) {
+                callback(false, data);
+            } else {
+                callback('file not found');
+            }
+        });
+    } else {
+        callback('')
+    }
 };
 
 module.exports = helpers;

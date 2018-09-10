@@ -1,7 +1,7 @@
 const _data = require("../../../lib/data");
 const helpers = require("../../../utils/helpers");
 const token_handler = require("./tokens");
-const CONTENT_TYPE = "JSON";
+const CONTENT_TYPE = "application/json";
 
 const user_handler = {
     // only authenticated user can get their own data, not anyone else's data

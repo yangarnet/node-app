@@ -3,27 +3,29 @@ const StringDecoder = require("string_decoder").StringDecoder;
 const url = require("url");
 
 const helpers = require("../../utils/helpers");
-const handlers = require("./handler/Index");
+const handler = require("./handler/Index");
 
 // define the router configuration here
 const routerConfig = {
     // add new routes to server html
-    "": handlers.index,
-    "account/create": handlers.accountCreate,
-    "account/edit": handlers.accountEdit,
-    "account/delete": handlers.accountDelete,
-    "session/create": handlers.sessionCreate,
-    "session/deleted": handlers.sessionDeleted,
-    "checks/all": handlers.checkList,
-    "checks/create": handlers.checkCreate,
-    "checks/edit": handlers.checkEdit,
-    sample: handlers.sample,
-    ping: handlers.ping,
-    users: handlers.users,
-    tokens: handlers.tokens,
-    checks: handlers.checks,
+    "": handler.index,
+    "account/create": handler.accountCreate,
+    "account/edit": handler.accountEdit,
+    "account/delete": handler.accountDelete,
+    "session/create": handler.sessionCreate,
+    "session/deleted": handler.sessionDeleted,
+    "checks/all": handler.checkList,
+    "checks/create": handler.checkCreate,
+    "checks/edit": handler.checkEdit,
+    sample: handler.sample,
+    ping: handler.ping,
+    users: handler.users,
+    tokens: handler.tokens,
+    checks: handler.checks,
     // this is the core router/service to check the server(given by url) status
-    pings: handlers.pings
+    pings: handler.pings,
+    // loading static files like css and js
+    'public': handler.public
 };
 
 const router = (req, res) => {
@@ -40,7 +42,7 @@ const router = (req, res) => {
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, "");
 
-    /* ------- get the payload from the request , after getting the payload, select handlers */
+    /* ------- get the payload from the request , after getting the payload, select handler */
     // get the payload from the request, we need the string coder to decode buffer
     const decoder = new StringDecoder("utf-8");
     let buffer = "";
@@ -53,7 +55,9 @@ const router = (req, res) => {
         buffer += decoder.end();
 
         // select the handler base on the trimmed path
-        const selectedHandler = typeof routerConfig[trimmedPath] !== "undefined" ? routerConfig[trimmedPath] : handlers.notFound;
+        let selectedHandler = typeof routerConfig[trimmedPath] !== "undefined" ? routerConfig[trimmedPath] : handler.notFound;
+        // cater the static public resource
+        selectedHandler = trimmedPath.indexOf('public/') > -1 ? handler.public : selectedHandler;
 
         // the data object here contains important info to choose property handler
         const data = {
@@ -67,27 +71,22 @@ const router = (req, res) => {
         // run the handler
         selectedHandler(data, (statusCode, payload, contentType) => {
             statusCode = typeof statusCode == "number" ? statusCode : 400;
-            // default the content to be json
-            contentType = typeof contentType === "string" ? contentType : "JSON";
-            let payloadString;
 
-            if (contentType === "JSON") {
-                payload = typeof payload == "object" ? payload : {};
-                payloadString = JSON.stringify(payload);
-                res.setHeader("Content-Type", "application/json");
-            }
-            if (contentType === "HTML") {
-                payload = typeof payload == "string" ? payload : "";
-                payloadString = payload;
-                res.setHeader("Content-Type", "text/html");
+            if (contentType === handler.CONTENT_TYPE.JSON) {
+                payload = JSON.stringify(typeof payload == "object" ? payload : {});
+
+            } else if (contentType === handler.CONTENT_TYPE.HTML) {
+                payload = typeof payload === "string" ? payload : "";
+            } else {
+                // loading static asset like js and css
+                payload = typeof payload !== "undefined" ? payload : "";
             }
 
+            res.setHeader("Content-Type", contentType);
             res.writeHead(statusCode);
             // we MUST call res.end() on each response!
-            res.end(payloadString);
+            res.end(payload);
 
-            console.log(`status: ${statusCode}\n`);
-            console.log(`response: ${JSON.stringify(payloadString, null, 4)}`);
         });
     });
 };
