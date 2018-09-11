@@ -6,15 +6,6 @@ const helpers = require('../../../utils/helpers');
 const acceptMethods = ['post', 'get', 'put', 'delete'];
 
 const handler = {
-    CONTENT_TYPE: {
-        HTML: 'text/html',
-        ICON: 'image/x-icon',
-        CSS: 'text/css',
-        JS: 'text/plain',
-        JPEG: 'image/jpeg',
-        PNG: 'image/png',
-        JSON: 'application/json'
-    },
     /* -----------------------html handler-----------------*/
     index: (data, callback) => {
         if (data.method === 'get') {
@@ -122,35 +113,7 @@ const handler = {
         }
     },
     public: (data, callback) => {
-        if (data.method === 'get') {
-            const filePath = data.trimmedPath.replace('public/', '');
-
-            let contentType = '';
-            if (data.trimmedPath.match(/.ico$/)) {
-                contentType = handler.CONTENT_TYPE.ICON;
-            }
-            if (data.trimmedPath.match(/.css$/)) {
-                contentType = handler.CONTENT_TYPE.CSS;
-            }
-            if (data.trimmedPath.match(/.js$/)) {
-                contentType = handler.CONTENT_TYPE.JS;
-            }
-            if (data.trimmedPath.match(/.jpg$/)) {
-                contentType = handler.CONTENT_TYPE.JPEG;
-            }
-            if (data.trimmedPath.match(/.png$/)) {
-                contentType = handler.CONTENT_TYPE.PNG;
-            }
-            helpers.loadStaticResource(filePath, (err, response) => {
-                if (!err && response) {
-                    callback(200, response, contentType);
-                } else {
-                    callback(500, undefined);
-                }
-            });
-        } else {
-            callback(405, undefined);
-        }
+        helpers.loadStaticResources(data, callback);
     },
 
     /* -----------------------json handler-----------------*/
@@ -159,7 +122,7 @@ const handler = {
     },
 
     notFound: (data, callback) => {
-        callback(404, { error: 'not such handler' }, handler.CONTENT_TYPE.JSON);
+        callback(404, { error: 'not such handler' }, helpers.CONTENT_TYPE.JSON);
     },
 
     // define the user handler
@@ -169,7 +132,7 @@ const handler = {
             // connect with the handler container
             user_handler[data.method](data, callback);
         } else {
-            callback(404, { error: 'no match user handler found' }, handler.CONTENT_TYPE.JSON);
+            callback(404, { error: 'no match user handler found' }, helpers.CONTENT_TYPE.JSON);
         }
     },
 
@@ -177,7 +140,7 @@ const handler = {
         if (acceptMethods.indexOf(data.method) > -1) {
             token_handler[data.method.toLowerCase()](data, callback);
         } else {
-            callback(404, { error: 'no match token handler found' }, handler.CONTENT_TYPE.JSON);
+            callback(404, { error: 'no match token handler found' }, helpers.CONTENT_TYPE.JSON);
         }
     },
 
@@ -185,7 +148,7 @@ const handler = {
         if (acceptMethods.indexOf(data.method.toLowerCase()) !== -1) {
             check_handler[data.method](data, callback);
         } else {
-            callback(404, { error: 'no match checks handle found' }, handler.CONTENT_TYPE.JSON);
+            callback(404, { error: 'no match checks handle found' }, helpers.CONTENT_TYPE.JSON);
         }
     }
 };

@@ -188,17 +188,43 @@ helpers.addUniversalTemplates = (str, data, callback) => {
     });
 };
 
-helpers.loadStaticResource = (filename, callback) => {
-    if (filename) {
-        const staticRessourceDir = path.join(__dirname, '/../public');
-        // reading non string content, no need to set encoding here
-        fs.readFile(`${staticRessourceDir}/${filename}`, (err, data) => {
-            if (!err && data) {
-                callback(false, data);
-            } else {
-                callback('file not found');
-            }
-        });
+helpers.getContentType = filename => {
+    let contentType = '';
+    if (filename.match(/.ico$/)) {
+        contentType = helpers.CONTENT_TYPE.ICON;
+    }
+    if (filename.match(/.css$/)) {
+        contentType = helpers.CONTENT_TYPE.CSS;
+    }
+    if (filename.match(/.js$/)) {
+        contentType = helpers.CONTENT_TYPE.JS;
+    }
+    if (filename.match(/.jpg$/)) {
+        contentType = helpers.CONTENT_TYPE.JPEG;
+    }
+    if (filename.match(/.png$/)) {
+        contentType = helpers.CONTENT_TYPE.PNG;
+    }
+    return contentType;
+}
+
+helpers.loadStaticResources = (data, callback) => {
+    if (data.method === 'get') {
+        const filename = data.trimmedPath.replace('public/', '');
+        if (filename) {
+            const contentType = helpers.getContentType(filename);
+            const staticRessourceDir = path.join(__dirname, '/../public');
+            // reading non string content, no need to set encoding here
+            fs.readFile(`${staticRessourceDir}/${filename}`, (err, data) => {
+                if (!err && data) {
+                    callback(200, data, contentType);
+                } else {
+                    callback(500, undefined, contentType);
+                }
+            });
+        } else {
+            callback(500, undefined, contentType);
+        }
     }
 };
 

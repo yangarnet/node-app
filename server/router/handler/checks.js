@@ -35,28 +35,28 @@ const check_handler = {
                                         userData.checks.push(checkId);
                                         _data.update('users', userData.phone, userData, err => {
                                             if (!err) {
-                                                callback(200, checkObj, 'application/json');
+                                                callback(200, checkObj, helper.CONTENT_TYPE.JSON);
                                             } else {
-                                                callback(500, { error: 'could not update user checks' }, 'application/json');
+                                                callback(500, { error: 'could not update user checks' }, helper.CONTENT_TYPE.JSON);
                                             }
                                         });
                                     } else {
-                                        callback(400, { error: 'cannot create user checks' }, 'application/json');
+                                        callback(400, { error: 'cannot create user checks' }, helper.CONTENT_TYPE.JSON);
                                     }
                                 });
                             } else {
-                                callback(400, { error: 'your checks reached the max limit' }, 'application/json');
+                                callback(400, { error: 'your checks reached the max limit' }, helper.CONTENT_TYPE.JSON);
                             }
                         } else {
-                            callback(500, { error: 'read user data error' }, 'application/json');
+                            callback(500, { error: 'read user data error' }, helper.CONTENT_TYPE.JSON);
                         }
                     });
                 } else {
-                    callback(500, { error: 'read token data error' }, 'application/json');
+                    callback(500, { error: 'read token data error' }, helper.CONTENT_TYPE.JSON);
                 }
             });
         } else {
-            callback(400, { error: 'request payload is invalid' }, 'application/json');
+            callback(400, { error: 'request payload is invalid' }, helper.CONTENT_TYPE.JSON);
         }
     },
 
@@ -70,9 +70,9 @@ const check_handler = {
                     const token = typeof data.headers.token === 'string' ? data.headers.token : false;
                     token_handler.verifyToken(token, checkData.userPhone, isValidToken => {
                         if (isValidToken) {
-                            callback(200, checkData, 'application/json');
+                            callback(200, checkData, helper.CONTENT_TYPE.JSON);
                         } else {
-                            callback(403, { error: 'invalid token' }, 'application/json');
+                            callback(403, { error: 'invalid token' }, helper.CONTENT_TYPE.JSON);
                         }
                     });
                 } else {
@@ -80,7 +80,7 @@ const check_handler = {
                 }
             });
         } else {
-            callback(400, { error: 'plz provider a valide check id' }, 'application/json');
+            callback(400, { error: 'plz provider a valide check id' }, helper.CONTENT_TYPE.JSON);
         }
     },
 
@@ -106,28 +106,28 @@ const check_handler = {
                                             // delete the checks
                                             _data.delete('checks', checkId, (err, res) => {
                                                 if ((!err, res)) {
-                                                    callback(200, { success: 'delete user checks success' }, 'application/json');
+                                                    callback(200, { success: 'delete user checks success' }, helper.CONTENT_TYPE.JSON);
                                                 } else {
-                                                    callback(500, { error: 'delete user checks fails' }, 'application/json');
+                                                    callback(500, { error: 'delete user checks fails' }, helper.CONTENT_TYPE.JSON);
                                                 }
                                             });
                                         } else {
-                                            callback(500, { error: 'update user checks fails' }, 'application/json');
+                                            callback(500, { error: 'update user checks fails' }, helper.CONTENT_TYPE.JSON);
                                         }
                                     });
                                 } else {
-                                    callback(200, { success: 'no token to delete' }, 'application/json');
+                                    callback(200, { success: 'no token to delete' }, helper.CONTENT_TYPE.JSON);
                                 }
                             } else {
-                                callback(400, { error: 'read user data error' }, 'application/json');
+                                callback(400, { error: 'read user data error' }, helper.CONTENT_TYPE.JSON);
                             }
                         });
                     } else {
-                        callback(403, { error: 'invalid token' }, 'application/json');
+                        callback(403, { error: 'invalid token' }, helper.CONTENT_TYPE.JSON);
                     }
                 });
             } else {
-                callback(400, { error: 'read check data error' }, 'application/json');
+                callback(400, { error: 'read check data error' }, helper.CONTENT_TYPE.JSON);
             }
         });
     },
@@ -149,21 +149,21 @@ const check_handler = {
                             checkData.timeoutSeconds = timeoutSeconds;
                             _data.update('checks', checkId, checkData, (err, response) => {
                                 if (!err && response) {
-                                    callback(200, { success: 'update checks successful' }, 'application/json');
+                                    callback(200, { success: 'update checks successful' }, helper.CONTENT_TYPE.JSON);
                                 } else {
-                                    callback(500, { error: 'fail to update checks' }, 'application/json');
+                                    callback(500, { error: 'fail to update checks' }, helper.CONTENT_TYPE.JSON);
                                 }
                             });
                         } else {
-                            callback(403, { error: 'invalid token' }, 'application/json');
+                            callback(403, { error: 'invalid token' }, helper.CONTENT_TYPE.JSON);
                         }
                     });
                 } else {
-                    callback(400, { error: 'invalid check id' }, 'application/json');
+                    callback(400, { error: 'invalid check id' }, helper.CONTENT_TYPE.JSON);
                 }
             });
         } else {
-            callback(400, { error: 'invalid request' }, 'application/json');
+            callback(400, { error: 'invalid request' }, helper.CONTENT_TYPE.JSON);
         }
     }
 };

@@ -1,7 +1,6 @@
 const _data = require("../../../lib/data");
 const helpers = require("../../../utils/helpers");
 const token_handler = require("./tokens");
-const CONTENT_TYPE = "application/json";
 
 const user_handler = {
     // only authenticated user can get their own data, not anyone else's data
@@ -16,17 +15,17 @@ const user_handler = {
                     _data.read("users", phone, (err, res) => {
                         if (res && !err) {
                             delete res.password;
-                            callback(200, res , CONTENT_TYPE);
+                            callback(200, res , helpers.CONTENT_TYPE.JSON);
                         } else {
-                            callback(404, { error: "user not found" }, CONTENT_TYPE);
+                            callback(404, { error: "user not found" }, helpers.CONTENT_TYPE.JSON);
                         }
                     });
                 } else {
-                    callback(403, { error: "please give a valid token to access information" }, CONTENT_TYPE);
+                    callback(403, { error: "please give a valid token to access information" }, helpers.CONTENT_TYPE.JSON);
                 }
             });
         } else {
-            callback(400, { error: "plz provide a valid phone number" }, CONTENT_TYPE);
+            callback(400, { error: "plz provide a valid phone number" }, helpers.CONTENT_TYPE.JSON);
         }
     },
 
@@ -52,14 +51,14 @@ const user_handler = {
                         // write the file
                         _data.create("users", phone, newUser, err => {
                             if (!err) {
-                                callback(200, { succes: "add new user successful" }, CONTENT_TYPE);
+                                callback(200, { succes: "add new user successful" }, helpers.CONTENT_TYPE.JSON);
                             } else {
-                                callback(500, { error: err }, CONTENT_TYPE);
+                                callback(500, { error: err }, helpers.CONTENT_TYPE.JSON);
                             }
                         });
                     }
                 } else {
-                    callback(400, { error: "a user already exists with that number" }, CONTENT_TYPE);
+                    callback(400, { error: "a user already exists with that number" }, helpers.CONTENT_TYPE.JSON);
                 }
             });
         } else {
@@ -80,7 +79,7 @@ const user_handler = {
             if (!tosagreement) {
                 error.acceptTC = "need to accet T&C";
             }
-            callback(400, { error }, CONTENT_TYPE);
+            callback(400, { error }, helpers.CONTENT_TYPE.JSON);
         }
     },
     // only authenticated user can update
@@ -102,17 +101,17 @@ const user_handler = {
                         }
                         _data.update("users", phone, userData, (err, data) => {
                             if (!err) {
-                                callback(200, data, CONTENT_TYPE);
+                                callback(200, data, helpers.CONTENT_TYPE.JSON);
                             } else {
-                                callback(400, { error: "fail to update user information" }, CONTENT_TYPE );
+                                callback(400, { error: "fail to update user information" }, helpers.CONTENT_TYPE.JSON );
                             }
                         });
                     } else {
-                        callback(404, { error: `given user ${phone} not exists` }, CONTENT_TYPE);
+                        callback(404, { error: `given user ${phone} not exists` }, helpers.CONTENT_TYPE.JSON);
                     }
                 });
             } else {
-                callback(403, { error: "only authorised can do the update" }, CONTENT_TYPE);
+                callback(403, { error: "only authorised can do the update" }, helpers.CONTENT_TYPE.JSON);
             }
         });
     },
@@ -126,17 +125,17 @@ const user_handler = {
                     if (!err && data) {
                         _data.delete("users", phone, (err, response) => {
                             if (!err) {
-                                callback(200, response, CONTENT_TYPE);
+                                callback(200, response, helpers.CONTENT_TYPE.JSON);
                             } else {
-                                callback(400, { error }, CONTENT_TYPE);
+                                callback(400, { error }, helpers.CONTENT_TYPE.JSON);
                             }
                         });
                     } else {
-                        callback(404, { error }, CONTENT_TYPE);
+                        callback(404, { error }, helpers.CONTENT_TYPE.JSON);
                     }
                 });
             } else {
-                callback(403, { error: "you are not authorized to delete the user profile" }, CONTENT_TYPE);
+                callback(403, { error: "you are not authorized to delete the user profile" }, helpers.CONTENT_TYPE.JSON);
             }
         });
     }
