@@ -82,13 +82,9 @@ const token_handler = {
                         data.expires = Date.now() + 1000 * 60 * 60;
                         _data.update("tokens", tokenId, data, (err, res) => {
                             if (!err && res) {
-                                callback(200, {
-                                    succes: "extend token successful"
-                                }, JSON_RES);
+                                callback(200, { succes: "extend token successful" }, JSON_RES);
                             } else {
-                                callback(500, {
-                                    error: "cannot extend the token"
-                                }, JSON_RES);
+                                callback(500, { error: "cannot extend the token" }, JSON_RES);
                             }
                         });
                     } else {
@@ -101,26 +97,19 @@ const token_handler = {
                 }
             });
         } else {
-            callback(400, {
-                error:
-                    "missing required tokenid and extend=true to update token"
-            }, JSON_RES);
+            callback(400, { error: "missing required tokenid and extend=true to update token" }, JSON_RES);
         }
     },
     delete: (data, callback) => {
-        const { tokenId } = data.query;
+        const tokenId = data.query.id;
         if (tokenId) {
             _data.read("tokens", tokenId, (err, res) => {
                 if (!err && res) {
                     _data.delete("tokens", tokenId, (err, response) => {
                         if (!err && response) {
-                            callback(200, {
-                                succes: `delete token success: ${tokenId}`
-                            }, JSON_RES);
+                            callback(200, { succes: `delete token success: ${tokenId}` }, JSON_RES);
                         } else {
-                            callback(500, {
-                                error: "cannot delete the given token"
-                            }, JSON_RES);
+                            callback(500, { error: "cannot delete the given token" }, JSON_RES);
                         }
                     });
                 } else {

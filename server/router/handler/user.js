@@ -16,7 +16,7 @@ const user_handler = {
                     _data.read("users", phone, (err, res) => {
                         if (res && !err) {
                             delete res.password;
-                            callback(200, { succes: res }, CONTENT_TYPE);
+                            callback(200, res , CONTENT_TYPE);
                         } else {
                             callback(404, { error: "user not found" }, CONTENT_TYPE);
                         }
@@ -85,41 +85,32 @@ const user_handler = {
     },
     // only authenticated user can update
     put: (data, callback) => {
-        const { phone } = data.query;
-        const { firstname, lastname, password, tosagreement } = data.payload;
+        const { phone, firstname, lastname, password } = data.payload;
         const token = typeof data.headers.token === "string" ? data.headers.token : false;
         token_handler.verifyToken(token, phone, isValidToken => {
-            if (isValidToken) {
-                if (phone && tosagreement) {
-                    _data.read("users", phone, (err, data) => {
-                        if (!err && data) {
-                            const hashedPassword = helpers.hash(password);
-                            const updatedUser = {
-                                firstname,
-                                lastname,
-                                password: hashedPassword,
-                                tosagreement
-                            };
-                            _data.update("users", phone, updatedUser, (err, data) => {
-                                if (!err) {
-                                    callback(200, { success: data }, CONTENT_TYPE);
-                                } else {
-                                    callback(
-                                        400,
-                                        {
-                                            error: "fail to update user information"
-                                        },
-                                        CONTENT_TYPE
-                                    );
-                                }
-                            });
-                        } else {
-                            callback(404, { error: `given user ${phone} not exists` }, CONTENT_TYPE);
+            if (isValidToken && phone) {
+                _data.read("users", phone, (err, userData) => {
+                    if (!err && userData) {
+                        if (password) {
+                            userData.password = helpers.hash(password);
                         }
-                    });
-                } else {
-                    callback(400, { error: "plz agree to the T&C" }, CONTENT_TYPE);
-                }
+                        if (firstname) {
+                            userData.firstname = firstname;
+                        }
+                        if (lastname) {
+                            userData.lastname = lastname;
+                        }
+                        _data.update("users", phone, userData, (err, data) => {
+                            if (!err) {
+                                callback(200, data, CONTENT_TYPE);
+                            } else {
+                                callback(400, { error: "fail to update user information" }, CONTENT_TYPE );
+                            }
+                        });
+                    } else {
+                        callback(404, { error: `given user ${phone} not exists` }, CONTENT_TYPE);
+                    }
+                });
             } else {
                 callback(403, { error: "only authorised can do the update" }, CONTENT_TYPE);
             }

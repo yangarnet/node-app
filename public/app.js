@@ -372,7 +372,7 @@ app.loadDataOnPage = function(){
 // Load the account edit page specifically
 app.loadAccountEditPage = function(){
   // Get the phone number from the current token, or log the user out if none is there
-  var phone = typeof(app.config.sessionToken.phone) == 'string' ? app.config.sessionToken.phone : false;
+  var phone = typeof(app.config.sessionToken.phone) === 'string' ? app.config.sessionToken.phone : false;
   if(phone){
     // Fetch the user data
     var queryStringObject = {
@@ -381,8 +381,8 @@ app.loadAccountEditPage = function(){
     app.client.request(undefined,'api/users','GET',queryStringObject,undefined,function(statusCode,responsePayload){
       if(statusCode == 200){
         // Put the data into the forms as values where needed
-        document.querySelector("#accountEdit1 .firstNameInput").value = responsePayload.firstName;
-        document.querySelector("#accountEdit1 .lastNameInput").value = responsePayload.lastName;
+        document.querySelector("#accountEdit1 .firstNameInput").value = responsePayload.firstname;
+        document.querySelector("#accountEdit1 .lastNameInput").value = responsePayload.lastname;
         document.querySelector("#accountEdit1 .displayPhoneInput").value = responsePayload.phone;
 
         // Put the hidden phone field into both forms

@@ -135,6 +135,34 @@ const handler = {
         }
     },
 
+    accountEdit: (data,callback) => {
+        // Reject any request that isn't a GET
+        if(data.method == 'get'){
+          // Prepare data for interpolation
+          var templateData = {
+            'head.title' : 'Account Settings',
+            'body.class' : 'accountEdit'
+          };
+          // Read in a template as a string
+          helpers.getTemplate('accountEdit',templateData,function(err,str){
+            if(!err && str){
+              // Add the universal header and footer
+              helpers.addUniversalTemplates(str,templateData,function(err,str){
+                if(!err && str){
+                  // Return that page as HTML
+                  callback(200,str,'html');
+                } else {
+                  callback(500,undefined,'html');
+                }
+              });
+            } else {
+              callback(500,undefined,'html');
+            }
+          });
+        } else {
+          callback(405,undefined,'html');
+        }
+    },
     // Dashboard (view all checks)
     checkList: (data,callback) => {
         // Reject any request that isn't a GET
@@ -196,6 +224,8 @@ const handler = {
             callback(405, undefined);
         }
     },
+
+
     /* -----------------------json handler-----------------*/
     ping: (data, callback) => {
         callback(200);
@@ -208,7 +238,7 @@ const handler = {
     // define the user handler
     users: (data, callback) => {
         // see the data object in router module , line 25
-        if (acceptMethods.indexOf(data.method) > -1) {
+        if (acceptMethods.indexOf(data.method.toLowerCase()) > -1) {
             // connect with the handler container
             user_handler[data.method](data, callback);
         } else {
@@ -218,14 +248,14 @@ const handler = {
 
     tokens: (data, callback) => {
         if (acceptMethods.indexOf(data.method) > -1) {
-            token_handler[data.method](data, callback);
+            token_handler[data.method.toLowerCase()](data, callback);
         } else {
             callback(404, { error: "no match token handler found" }, handler.CONTENT_TYPE.JSON);
         }
     },
 
     checks: (data, callback) => {
-        if (acceptMethods.indexOf(data.method) !== -1) {
+        if (acceptMethods.indexOf(data.method.toLowerCase()) !== -1) {
             check_handler[data.method](data, callback);
         } else {
             callback(404, { error: "no match checks handle found" }, handler.CONTENT_TYPE.JSON);
