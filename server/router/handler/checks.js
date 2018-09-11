@@ -16,8 +16,7 @@ const check_handler = {
         } = data.payload;
         if (protocol && url && method && successCode && timeoutSeconds) {
             // get the token from request header
-            const token =
-                typeof data.headers.token === "string"
+            const token = typeof data.headers.token === "string"
                     ? data.headers.token
                     : false;
                 token_handler.verifyToken(token, phone, isValidToken => {
@@ -57,9 +56,7 @@ const check_handler = {
                                                             userData,
                                                             err => {
                                                                 if (!err) {
-                                                                    callback(200, {
-                                                                        success: checkObj
-                                                                    });
+                                                                    callback(200, checkObj, 'application/json');
                                                                 } else {
                                                                     callback(500, {
                                                                         error:
@@ -94,7 +91,7 @@ const check_handler = {
                     }
                 });
         } else {
-            callback(400, { error: "request payload is invalid" });
+            callback(400, { error: "request payload is invalid" }, 'application/json');
         }
     },
 
