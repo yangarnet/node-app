@@ -56,19 +56,12 @@ const token_handler = {
                         };
                         _data.create("tokens", tokenId, token, err => {
                             if (!err) {
-                                callback(200, {
-                                    succes: "create new token success"
-                                }, JSON_RES);
+                                callback(200, token , JSON_RES);
                             } else {
-                                callback(400, {
-                                    errror: "creating token error"
-                                }, JSON_RES);
+                                callback(400, { errror: "creating token error" }, JSON_RES);
                             }
                         });
-                    } else {
-                        callback(400, {
-                            error: "user password does not match"
-                        }, JSON_RES);
+                    } else { callback(400, { error: "user password does not match" }, JSON_RES);
                     }
                 } else {
                     callback(err, data, JSON_RES);
