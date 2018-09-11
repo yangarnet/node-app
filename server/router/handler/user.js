@@ -121,22 +121,20 @@ const user_handler = {
         const { phone } = data.query;
         const token = typeof data.headers.token === "string" ? data.headers.token : false;
         token_handler.verifyToken(token, phone, isValidToken => {
-            if (isValidToken) {
-                if (phone) {
-                    _data.read("users", phone, (err, data) => {
-                        if (!err && data) {
-                            _data.delete("users", phone, (err, response) => {
-                                if (!err) {
-                                    callback(200, response, CONTENT_TYPE);
-                                } else {
-                                    callback(400, { error }, CONTENT_TYPE);
-                                }
-                            });
-                        } else {
-                            callback(404, { error }, CONTENT_TYPE);
-                        }
-                    });
-                }
+            if (isValidToken && phone) {
+                _data.read("users", phone, (err, data) => {
+                    if (!err && data) {
+                        _data.delete("users", phone, (err, response) => {
+                            if (!err) {
+                                callback(200, response, CONTENT_TYPE);
+                            } else {
+                                callback(400, { error }, CONTENT_TYPE);
+                            }
+                        });
+                    } else {
+                        callback(404, { error }, CONTENT_TYPE);
+                    }
+                });
             } else {
                 callback(403, { error: "you are not authorized to delete the user profile" }, CONTENT_TYPE);
             }

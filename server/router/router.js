@@ -11,7 +11,7 @@ const routerConfig = {
     "": handler.index,
     "account/create": handler.accountCreate,
     "account/edit": handler.accountEdit,
-    "account/delete": handler.accountDelete,
+    "account/deleted": handler.accountDeleted,
     "session/create": handler.sessionCreate,
     "session/deleted": handler.sessionDeleted,
     "checks/all": handler.checkList,
