@@ -77,6 +77,35 @@ const handler = {
         }
     },
 
+    // create session after register
+    sessionCreate: (data, callback) => {
+        if (data.method === "get") {
+            const templateData = {
+                "head.title": "log in your account",
+                "head.description":
+                    "Enter your phone number and passworkd to login to your account",
+                "body.class": "sessionCreate"
+            };
+            // Read in a template as a string
+            helpers.getTemplate("sessionCreate", templateData, function(err, str) {
+                if (!err && str) {
+                    // Add the universal header and footer
+                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
+                        if (!err && str) {
+                            // Return that page as HTML
+                            callback(200, str, handler.CONTENT_TYPE.HTML);
+                        } else {
+                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
+                        }
+                    });
+                } else {
+                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
+                }
+            });
+        } else {
+            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+        }
+    },
     public: (data, callback) => {
         if (data.method === 'get') {
             const filePath = data.trimmedPath.replace('public/', '');
