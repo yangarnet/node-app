@@ -69,9 +69,9 @@ const router = (req, res) => {
         selectedHandler(data, (statusCode, payload, contentType) => {
             statusCode = typeof statusCode == 'number' ? statusCode : 400;
 
-            if (contentType === handler.CONTENT_TYPE.JSON) {
+            if (contentType === helpers.CONTENT_TYPE.JSON) {
                 payload = JSON.stringify(typeof payload == 'object' ? payload : {});
-            } else if (contentType === handler.CONTENT_TYPE.HTML) {
+            } else if (contentType === helpers.CONTENT_TYPE.HTML) {
                 payload = typeof payload === 'string' ? payload : '';
             } else {
                 // loading static asset like js and css

@@ -15,7 +15,6 @@ const handler = {
         PNG: 'image/png',
         JSON: 'application/json'
     },
-
     /* -----------------------html handler-----------------*/
     index: (data, callback) => {
         if (data.method === 'get') {
@@ -25,24 +24,7 @@ const handler = {
                     "We offer free, simple uptime monitoring for HTTP/HTTPS sites all kinds. When your site goes down, we'll send you a text to let you know",
                 'body.class': 'index'
             };
-            // Read in a template as a string
-            helpers.getTemplate('index', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page as HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('index', templateData, callback);
         }
     },
 
@@ -54,24 +36,7 @@ const handler = {
                 'head.description': 'sign up with us and get started monitoring',
                 'body.class': 'accountCreate'
             };
-            // Read in a template as a string
-            helpers.getTemplate('accountCreate', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page as HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('accountCreate', templateData, callback);
         }
     },
 
@@ -83,24 +48,7 @@ const handler = {
                 'head.description': 'Enter your phone number and passworkd to login to your account',
                 'body.class': 'sessionCreate'
             };
-            // Read in a template as a string
-            helpers.getTemplate('sessionCreate', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page as HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('sessionCreate', templateData, callback);
         }
     },
     sessionDeleted: (data, callback) => {
@@ -110,24 +58,7 @@ const handler = {
                 'head.description': 'you just log out of your account',
                 'body.class': 'sessionDeleted'
             };
-            // Read in a template as a string
-            helpers.getTemplate('sessionDeleted', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page as HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('sessionDeleted', templateData, callback);
         }
     },
     // Account has been deleted
@@ -140,24 +71,7 @@ const handler = {
                 'head.description': 'Your account has been deleted.',
                 'body.class': 'accountDeleted'
             };
-            // Read in a template as a string
-            helpers.getTemplate('accountDeleted', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page as HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('accountDeleted', templateData, callback);
         }
     },
 
@@ -169,24 +83,7 @@ const handler = {
                 'head.title': 'Account Settings',
                 'body.class': 'accountEdit'
             };
-            // Read in a template as a string
-            helpers.getTemplate('accountEdit', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page ashandler.CONTENT_TYPE.HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('accountEdit', templateData, callback);
         }
     },
     // Dashboard (view all checks)
@@ -198,24 +95,7 @@ const handler = {
                 'head.title': 'Dashboard',
                 'body.class': 'checksList'
             };
-            // Read in a template as a string
-            helpers.getTemplate('checksList', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page ashandler.CONTENT_TYPE.HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('checksList', templateData, callback);
         }
     },
     // Create a new check
@@ -227,24 +107,7 @@ const handler = {
                 'head.title': 'Create a New Check',
                 'body.class': 'checksCreate'
             };
-            // Read in a template as a string
-            helpers.getTemplate('checksCreate', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page ashandler.CONTENT_TYPE.HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('checksCreate', templateData, callback);
         }
     },
     checkEdit: (data, callback) => {
@@ -255,24 +118,7 @@ const handler = {
                 'head.title': 'Create a New Check',
                 'body.class': 'checksEdit'
             };
-            // Read in a template as a string
-            helpers.getTemplate('checksEdit', templateData, function(err, str) {
-                if (!err && str) {
-                    // Add the universal header and footer
-                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
-                        if (!err && str) {
-                            // Return that page ashandler.CONTENT_TYPE.HTML
-                            callback(200, str, handler.CONTENT_TYPE.HTML);
-                        } else {
-                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                        }
-                    });
-                } else {
-                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+            helpers.getHtml('checksEdit', templateData, callback);
         }
     },
     public: (data, callback) => {
