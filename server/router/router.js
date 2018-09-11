@@ -1,28 +1,28 @@
 // get the string decoder for decoding request payload
-const StringDecoder = require("string_decoder").StringDecoder;
-const url = require("url");
+const StringDecoder = require('string_decoder').StringDecoder;
+const url = require('url');
 
-const helpers = require("../../utils/helpers");
-const handler = require("./handler/Index");
+const helpers = require('../../utils/helpers');
+const handler = require('./handler/Index');
 
 // define the router configuration here
 const routerConfig = {
     // add new routes to server html
-    "": handler.index,
-    "account/create": handler.accountCreate,
-    "account/edit": handler.accountEdit,
-    "account/deleted": handler.accountDeleted,
-    "session/create": handler.sessionCreate,
-    "session/deleted": handler.sessionDeleted,
-    "checks/all": handler.checkList,
-    "checks/create": handler.checkCreate,
-    "checks/edit": handler.checkEdit,
-    'ping' : handler.ping,
-    'api/users' : handler.users,
-    'api/tokens' : handler.tokens,
-    'api/checks' : handler.checks,
+    '': handler.index,
+    'account/create': handler.accountCreate,
+    'account/edit': handler.accountEdit,
+    'account/deleted': handler.accountDeleted,
+    'session/create': handler.sessionCreate,
+    'session/deleted': handler.sessionDeleted,
+    'checks/all': handler.checkList,
+    'checks/create': handler.checkCreate,
+    'checks/edit': handler.checkEdit,
+    ping: handler.ping,
+    'api/users': handler.users,
+    'api/tokens': handler.tokens,
+    'api/checks': handler.checks,
     // loading static files like css and js
-    'public': handler.public
+    public: handler.public
 };
 
 const router = (req, res) => {
@@ -37,22 +37,22 @@ const router = (req, res) => {
     const query = parsedUrl.query;
     // get the path name from parsedUrl
     const path = parsedUrl.pathname;
-    const trimmedPath = path.replace(/^\/+|\/+$/g, "");
+    const trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
     /* ------- get the payload from the request , after getting the payload, select handler */
     // get the payload from the request, we need the string coder to decode buffer
-    const decoder = new StringDecoder("utf-8");
-    let buffer = "";
+    const decoder = new StringDecoder('utf-8');
+    let buffer = '';
     // bind with data event
-    req.on("data", data => {
+    req.on('data', data => {
         buffer += decoder.write(data);
     });
 
-    req.on("end", () => {
+    req.on('end', () => {
         buffer += decoder.end();
 
         // select the handler base on the trimmed path
-        let selectedHandler = typeof routerConfig[trimmedPath] !== "undefined" ? routerConfig[trimmedPath] : handler.notFound;
+        let selectedHandler = typeof routerConfig[trimmedPath] !== 'undefined' ? routerConfig[trimmedPath] : handler.notFound;
         // cater the static public resource
         selectedHandler = trimmedPath.indexOf('public/') > -1 ? handler.public : selectedHandler;
 
@@ -67,23 +67,21 @@ const router = (req, res) => {
 
         // run the handler
         selectedHandler(data, (statusCode, payload, contentType) => {
-            statusCode = typeof statusCode == "number" ? statusCode : 400;
+            statusCode = typeof statusCode == 'number' ? statusCode : 400;
 
             if (contentType === handler.CONTENT_TYPE.JSON) {
-                payload = JSON.stringify(typeof payload == "object" ? payload : {});
-
+                payload = JSON.stringify(typeof payload == 'object' ? payload : {});
             } else if (contentType === handler.CONTENT_TYPE.HTML) {
-                payload = typeof payload === "string" ? payload : "";
+                payload = typeof payload === 'string' ? payload : '';
             } else {
                 // loading static asset like js and css
-                payload = typeof payload !== "undefined" ? payload : "";
+                payload = typeof payload !== 'undefined' ? payload : '';
             }
 
-            res.setHeader("Content-Type", contentType);
+            res.setHeader('Content-Type', contentType);
             res.writeHead(statusCode);
             // we MUST call res.end() on each response!
             res.end(payload);
-
         });
     });
 };

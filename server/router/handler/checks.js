@@ -86,64 +86,57 @@ const check_handler = {
 
     /* require data: checkId*/
     delete: (data, callback) => {
-        const { checkId } = data.query;
+        const checkId = data.query.id;
         // will need user verification as well
-        if (checkId) {
-            _data.read('checks', checkId, (err, checkData) => {
-                if (!err && checkData) {
-                    const token = typeof data.headers.token === 'string' ? data.headers.token : false;
-                    token_handler.verifyToken(token, checkData.userPhone, isValidToken => {
-                        if (isValidToken) {
-                            // with phone number from check data to verify the user checks
-                            _data.read('users', checkData.userPhone, (err, userData) => {
-                                if (!err && userData) {
-                                    const checkIndex = userData.checks.indexOf(checkId);
-                                    if (checkIndex > -1) {
-                                        // remove the check
-                                        userData.checks.splice(checkIndex, 1);
-                                        //save user
-                                        _data.update('users', checkData.userPhone, userData, (err, data) => {
-                                            if (!err && data) {
-                                                // delete the checks
-                                                _data.delete('checks', checkId, (err, res) => {
-                                                    if ((!err, res)) {
-                                                        callback(
-                                                            200,
-                                                            { success: 'delete user checks success' },
-                                                            'application/json'
-                                                        );
-                                                    } else {
-                                                        callback(500, { error: 'delete user checks fails' }, 'application/json');
-                                                    }
-                                                });
-                                            } else {
-                                                callback(500, { error: 'update user checks fails' }, 'application/json');
-                                            }
-                                        });
-                                    } else {
-                                        callback(200, { success: 'no token to delete' }, 'application/json');
-                                    }
+        _data.read('checks', checkId, (err, checkData) => {
+            if (!err && checkData) {
+                const token = typeof data.headers.token === 'string' ? data.headers.token : false;
+                token_handler.verifyToken(token, checkData.userPhone, isValidToken => {
+                    if (isValidToken) {
+                        // with phone number from check data to verify the user checks
+                        _data.read('users', checkData.userPhone, (err, userData) => {
+                            if (!err && userData) {
+                                const checkIndex = userData.checks.indexOf(checkId);
+                                if (checkIndex > -1) {
+                                    // remove the check
+                                    userData.checks.splice(checkIndex, 1);
+                                    //save user
+                                    _data.update('users', checkData.userPhone, userData, (err, data) => {
+                                        if (!err && data) {
+                                            // delete the checks
+                                            _data.delete('checks', checkId, (err, res) => {
+                                                if ((!err, res)) {
+                                                    callback(200, { success: 'delete user checks success' }, 'application/json');
+                                                } else {
+                                                    callback(500, { error: 'delete user checks fails' }, 'application/json');
+                                                }
+                                            });
+                                        } else {
+                                            callback(500, { error: 'update user checks fails' }, 'application/json');
+                                        }
+                                    });
                                 } else {
-                                    callback(400, { error: 'read user data error' }, 'application/json');
+                                    callback(200, { success: 'no token to delete' }, 'application/json');
                                 }
-                            });
-                        } else {
-                            callback(403, { error: 'invalid token' }, 'application/json');
-                        }
-                    });
-                } else {
-                    callback(400, { error: 'read check data error' }, 'application/json');
-                }
-            });
-        }
+                            } else {
+                                callback(400, { error: 'read user data error' }, 'application/json');
+                            }
+                        });
+                    } else {
+                        callback(403, { error: 'invalid token' }, 'application/json');
+                    }
+                });
+            } else {
+                callback(400, { error: 'read check data error' }, 'application/json');
+            }
+        });
     },
 
     /* require data: checkId*/
     put: (data, callback) => {
-        const { checkId } = data.query;
-        const { protocol, url, method, successCode, timeoutSeconds } = data.payload;
+        const { id: checkId, protocol, url, method, successCodes, timeoutSeconds } = data.payload;
         // will need user verification as well
-        if (protocol && url && method && successCode && timeoutSeconds) {
+        if (protocol && url && method && successCodes && timeoutSeconds) {
             _data.read('checks', checkId, (err, checkData) => {
                 if (!err && checkData) {
                     const token = typeof data.headers.token === 'string' ? data.headers.token : false;
@@ -152,7 +145,7 @@ const check_handler = {
                             checkData.protocol = protocol;
                             checkData.method = method;
                             checkData.url = url;
-                            checkData.successCode = successCode;
+                            checkData.successCode = successCodes;
                             checkData.timeoutSeconds = timeoutSeconds;
                             _data.update('checks', checkId, checkData, (err, response) => {
                                 if (!err && response) {
