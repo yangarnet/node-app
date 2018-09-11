@@ -47,6 +47,36 @@ const handler = {
         }
     },
 
+    // load account creation page
+    accountCreate: (data, callback) => {
+        if (data.method === "get") {
+            const templateData = {
+                "head.title": "register with us",
+                "head.description":
+                    "sign up with us and get started monitoring",
+                "body.class": "accountCreate"
+            };
+            // Read in a template as a string
+            helpers.getTemplate("accountCreate", templateData, function(err, str) {
+                if (!err && str) {
+                    // Add the universal header and footer
+                    helpers.addUniversalTemplates(str, templateData, function(err, str) {
+                        if (!err && str) {
+                            // Return that page as HTML
+                            callback(200, str, handler.CONTENT_TYPE.HTML);
+                        } else {
+                            callback(500, undefined, handler.CONTENT_TYPE.HTML);
+                        }
+                    });
+                } else {
+                    callback(500, undefined, handler.CONTENT_TYPE.HTML);
+                }
+            });
+        } else {
+            callback(405, undefined, handler.CONTENT_TYPE.HTML);
+        }
+    },
+
     public: (data, callback) => {
         if (data.method === 'get') {
             const filePath = data.trimmedPath.replace('public/', '');

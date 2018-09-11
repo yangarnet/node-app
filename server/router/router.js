@@ -17,13 +17,10 @@ const routerConfig = {
     "checks/all": handler.checkList,
     "checks/create": handler.checkCreate,
     "checks/edit": handler.checkEdit,
-    sample: handler.sample,
-    ping: handler.ping,
-    users: handler.users,
-    tokens: handler.tokens,
-    checks: handler.checks,
-    // this is the core router/service to check the server(given by url) status
-    pings: handler.pings,
+    'ping' : handler.ping,
+    'api/users' : handler.users,
+    'api/tokens' : handler.tokens,
+    'api/checks' : handler.checks,
     // loading static files like css and js
     'public': handler.public
 };

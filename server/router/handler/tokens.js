@@ -1,6 +1,6 @@
 const _data = require("../../../lib/data");
 const helper = require("../../../utils/helpers");
-
+const  JSON_RES = 'application/json';
 const token_handler = {
     // verify if a token is still valid for a user when getting user informaiton!
     // verify a valid token by token id and user phone.
@@ -26,13 +26,13 @@ const token_handler = {
         if (tokenId) {
             _data.read("tokens", tokenId, (error, res) => {
                 if (!error && res) {
-                    callback(200, res);
+                    callback(200, res, JSON_RES);
                 } else {
-                    callback(404, { error: "token not found" });
+                    callback(404, { error: "token not found" }, JSON_RES);
                 }
             });
         } else {
-            callback(400, { error: "no token id specified" });
+            callback(400, { error: "no token id specified" }, JSON_RES);
         }
     },
     /*using phone number and password to generate token when user login*/
@@ -58,24 +58,24 @@ const token_handler = {
                             if (!err) {
                                 callback(200, {
                                     succes: "create new token success"
-                                });
+                                }, JSON_RES);
                             } else {
                                 callback(400, {
                                     errror: "creating token error"
-                                });
+                                }, JSON_RES);
                             }
                         });
                     } else {
                         callback(400, {
                             error: "user password does not match"
-                        });
+                        }, JSON_RES);
                     }
                 } else {
-                    callback(err, data);
+                    callback(err, data, JSON_RES);
                 }
             });
         } else {
-            callback(400, { error: "phone or pass is missing" });
+            callback(400, { error: "phone or pass is missing" }, JSON_RES);
         }
     },
     /*extend token expires, payload: {id, extend: boolean}*/
@@ -91,27 +91,27 @@ const token_handler = {
                             if (!err && res) {
                                 callback(200, {
                                     succes: "extend token successful"
-                                });
+                                }, JSON_RES);
                             } else {
                                 callback(500, {
                                     error: "cannot extend the token"
-                                });
+                                }, JSON_RES);
                             }
                         });
                     } else {
-                        callback(400, { error: "cannot extend expired token" });
+                        callback(400, { error: "cannot extend expired token" }, JSON_RES);
                     }
                 } else {
                     callback(404, {
                         error: `cannot find token by id ${tokenId}`
-                    });
+                    }, JSON_RES);
                 }
             });
         } else {
             callback(400, {
                 error:
                     "missing required tokenid and extend=true to update token"
-            });
+            }, JSON_RES);
         }
     },
     delete: (data, callback) => {
@@ -123,19 +123,19 @@ const token_handler = {
                         if (!err && response) {
                             callback(200, {
                                 succes: `delete token success: ${tokenId}`
-                            });
+                            }, JSON_RES);
                         } else {
                             callback(500, {
                                 error: "cannot delete the given token"
-                            });
+                            }, JSON_RES);
                         }
                     });
                 } else {
-                    callback(404, { error: "given token not found" });
+                    callback(404, { error: "given token not found" }, JSON_RES);
                 }
             });
         } else {
-            callback(400, { error: "no token id supplied" });
+            callback(400, { error: "no token id supplied" }, JSON_RES);
         }
     }
 };
