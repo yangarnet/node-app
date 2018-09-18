@@ -146,46 +146,41 @@ helpers.interpolate = (str, data) => {
     return str;
 };
 
-helpers.getTemplate = (templateName, data, callback) => {
+helpers.getTemplate = (templateName, data) => {
     templateName = typeof templateName == 'string' && templateName.length > 0 ? templateName : false;
     data = typeof data == 'object' && data !== null ? data : {};
     if (templateName) {
         var templatesDir = path.join(__dirname, '/../views/');
         // as is reading string, we need to set encoding: utf-8, otherwise leave it blank
-        fs.readFile(templatesDir + templateName + '.html', 'utf8', function(err, str) {
-            if (!err && str && str.length > 0) {
-                // Do interpolation on the string
-                var finalString = helpers.interpolate(str, data);
-                callback(false, finalString);
-            } else {
-                callback('No template could be found');
-            }
+        return new Promise((resolve, reject) => {
+            fs.readFile(templatesDir + templateName + '.html', 'utf8', function(err, str) {
+                if (!err && str && str.length > 0) {
+                    // Do interpolation on the string
+                    var finalString = helpers.interpolate(str, data);
+                    resolve(finalString);
+                } else {
+                    reject('No template could be found');
+                }
+            });
         });
     } else {
-        callback('A valid template name was not specified');
+        return new Promise((resolve, reject) => reject('A valid template name was not specified'));
     }
 };
 
-helpers.addUniversalTemplates = (str, data, callback) => {
+helpers.addUniversalTemplates = async (str, data) => {
     str = typeof str == 'string' && str.length > 0 ? str : '';
     data = typeof data == 'object' && data !== null ? data : {};
     // Get the header
-    helpers.getTemplate('header', data, function(err, headerString) {
-        if (!err && headerString) {
-            // Get the footer
-            helpers.getTemplate('footer', data, function(err, footerString) {
-                if (!err && footerString) {
-                    // Add them all together
-                    var fullString = headerString + str + footerString;
-                    callback(false, fullString);
-                } else {
-                    callback('Could not find the footer template');
-                }
-            });
-        } else {
-            callback('Could not find the header template');
-        }
-    });
+    try {
+        const headerString = await helpers.getTemplate('header', data);
+        const footerString = await helpers.getTemplate('footer', data);
+        const fullString = headerString + str + footerString;
+        return fullString;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
 };
 
 helpers.getContentType = filename => {
@@ -206,44 +201,38 @@ helpers.getContentType = filename => {
         contentType = helpers.CONTENT_TYPE.PNG;
     }
     return contentType;
-}
+};
 
-helpers.loadStaticResources = (data, callback) => {
+helpers.loadStaticResources = data => {
     if (data.method === 'get') {
         const filename = data.trimmedPath.replace('public/', '');
         if (filename) {
             const contentType = helpers.getContentType(filename);
             const staticRessourceDir = path.join(__dirname, '/../public');
-            // reading non string content, no need to set encoding here
-            fs.readFile(`${staticRessourceDir}/${filename}`, (err, data) => {
-                if (!err && data) {
-                    callback(200, data, contentType);
-                } else {
-                    callback(500, undefined, contentType);
-                }
+            return new Promise((resolve, reject) => {
+                fs.readFile(`${staticRessourceDir}/${filename}`, (err, data) => {
+                    if (!err && data) {
+                        resolve({ statusCode: 200, payload: data, contentType });
+                    } else {
+                        reject({ statusCode: 500, payload: undefined, contentType });
+                    }
+                });
             });
         } else {
-            callback(500, undefined, contentType);
+            return new Promise((resolve, reject) => reject('invalid filename'));
         }
     }
 };
 
-helpers.getHtml = (templateName, data, callback) => {
-    helpers.getTemplate(templateName, data, (err, str) => {
-        if (!err && str) {
-            // Add the universal header and footer
-            helpers.addUniversalTemplates(str, data, (err, str) => {
-                if (!err && str) {
-                    // Return that page as HTML
-                    callback(200, str, helpers.CONTENT_TYPE.HTML);
-                } else {
-                    callback(500, undefined, helpers.CONTENT_TYPE.HTML);
-                }
-            });
-        } else {
-            callback(500, undefined, helpers.CONTENT_TYPE.HTML);
-        }
-    });
+helpers.getHtml = async (templateName, data) => {
+    try {
+        const htmlString = await helpers.getTemplate(templateName, data);
+        const resultHtmlString = await helpers.addUniversalTemplates(htmlString, data);
+        return { statusCode: 200, payload: resultHtmlString, contentType: helpers.CONTENT_TYPE.HTML };
+    } catch (err) {
+        console.log(err);
+        return { statusCode: 500, payload: undefined, contentType: helpers.CONTENT_TYPE.HTML };
+    }
 };
 
 module.exports = helpers;

@@ -48,11 +48,12 @@ const router = (req, res) => {
         buffer += decoder.write(data);
     });
 
-    req.on('end', () => {
+    req.on('end', async () => {
         buffer += decoder.end();
 
         // select the handler base on the trimmed path
-        let selectedHandler = typeof routerConfig[trimmedPath] !== 'undefined' ? routerConfig[trimmedPath] : handler.notFound;
+        let selectedHandler =
+            typeof routerConfig[trimmedPath] !== 'undefined' ? routerConfig[trimmedPath] : handler.notFound;
         // cater the static public resource
         selectedHandler = trimmedPath.indexOf('public/') > -1 ? handler.public : selectedHandler;
 
@@ -66,7 +67,9 @@ const router = (req, res) => {
         };
 
         // run the handler
-        selectedHandler(data, (statusCode, payload, contentType) => {
+        try {
+            const result = await selectedHandler(data);
+            let { statusCode, payload, contentType } = result;
             statusCode = typeof statusCode == 'number' ? statusCode : 400;
 
             if (contentType === helpers.CONTENT_TYPE.JSON) {
@@ -82,7 +85,9 @@ const router = (req, res) => {
             res.writeHead(statusCode);
             // we MUST call res.end() on each response!
             res.end(payload);
-        });
+        } catch (err) {
+            res.end(err);
+        }
     });
 };
 

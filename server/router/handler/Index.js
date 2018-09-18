@@ -7,7 +7,7 @@ const acceptMethods = ['post', 'get', 'put', 'delete'];
 
 const handler = {
     /* -----------------------html handler-----------------*/
-    index: (data, callback) => {
+    index: data => {
         if (data.method === 'get') {
             const templateData = {
                 'head.title': 'Uptime Monitoring - Made Simple',
@@ -15,7 +15,7 @@ const handler = {
                     "We offer free, simple uptime monitoring for HTTP/HTTPS sites all kinds. When your site goes down, we'll send you a text to let you know",
                 'body.class': 'index'
             };
-            helpers.getHtml('index', templateData, callback);
+            return helpers.getHtml('index', templateData);
         }
     },
 
@@ -112,8 +112,8 @@ const handler = {
             helpers.getHtml('checksEdit', templateData, callback);
         }
     },
-    public: (data, callback) => {
-        helpers.loadStaticResources(data, callback);
+    public: data => {
+        return helpers.loadStaticResources(data);
     },
 
     /* -----------------------json handler-----------------*/
