@@ -7,7 +7,7 @@ const acceptMethods = ['post', 'get', 'put', 'delete'];
 
 const handler = {
     /* -----------------------html handler-----------------*/
-    index: data => {
+    index(data) {
         if (data.method === 'get') {
             const templateData = {
                 'head.title': 'Uptime Monitoring - Made Simple',
@@ -20,7 +20,7 @@ const handler = {
     },
 
     // load account creation page
-    accountCreate: (data, callback) => {
+    accountCreate(data, callback) {
         if (data.method === 'get') {
             const templateData = {
                 'head.title': 'register with us',
@@ -32,28 +32,28 @@ const handler = {
     },
 
     // create session after register
-    sessionCreate: (data, callback) => {
+    sessionCreate(data) {
         if (data.method === 'get') {
             const templateData = {
                 'head.title': 'log in your account',
                 'head.description': 'Enter your phone number and passworkd to login to your account',
                 'body.class': 'sessionCreate'
             };
-            helpers.getHtml('sessionCreate', templateData, callback);
+            return helpers.getHtml('sessionCreate', templateData);
         }
     },
-    sessionDeleted: (data, callback) => {
+    sessionDeleted(data) {
         if (data.method === 'get') {
             const templateData = {
                 'head.title': 'log out your account',
                 'head.description': 'you just log out of your account',
                 'body.class': 'sessionDeleted'
             };
-            helpers.getHtml('sessionDeleted', templateData, callback);
+            return helpers.getHtml('sessionDeleted', templateData);
         }
     },
     // Account has been deleted
-    accountDeleted: (data, callback) => {
+    accountDeleted(data, callback) {
         // Reject any request that isn't a GET
         if (data.method == 'get') {
             // Prepare data for interpolation
@@ -66,7 +66,7 @@ const handler = {
         }
     },
 
-    accountEdit: (data, callback) => {
+    accountEdit(data, callback) {
         // Reject any request that isn't a GET
         if (data.method == 'get') {
             // Prepare data for interpolation
@@ -78,7 +78,7 @@ const handler = {
         }
     },
     // Dashboard (view all checks)
-    checkList: (data, callback) => {
+    checkList(data, callback) {
         // Reject any request that isn't a GET
         if (data.method == 'get') {
             // Prepare data for interpolation
@@ -90,7 +90,7 @@ const handler = {
         }
     },
     // Create a new check
-    checkCreate: (data, callback) => {
+    checkCreate(data, callback) {
         // Reject any request that isn't a GET
         if (data.method == 'get') {
             // Prepare data for interpolation
@@ -101,7 +101,7 @@ const handler = {
             helpers.getHtml('checksCreate', templateData, callback);
         }
     },
-    checkEdit: (data, callback) => {
+    checkEdit(data, callback) {
         // Reject any request that isn't a GET
         if (data.method == 'get') {
             // Prepare data for interpolation
@@ -112,21 +112,21 @@ const handler = {
             helpers.getHtml('checksEdit', templateData, callback);
         }
     },
-    public: data => {
+    public(data) {
         return helpers.loadStaticResources(data);
     },
 
     /* -----------------------json handler-----------------*/
-    ping: (data, callback) => {
+    ping(data, callback) {
         callback(200);
     },
 
-    notFound: (data, callback) => {
+    notFound(data, callback) {
         callback(404, { error: 'not such handler' }, helpers.CONTENT_TYPE.JSON);
     },
 
     // define the user handler
-    users: (data, callback) => {
+    users(data, callback) {
         // see the data object in router module , line 25
         if (acceptMethods.indexOf(data.method.toLowerCase()) > -1) {
             // connect with the handler container
@@ -136,7 +136,7 @@ const handler = {
         }
     },
 
-    tokens: (data, callback) => {
+    tokens(data, callback) {
         if (acceptMethods.indexOf(data.method) > -1) {
             token_handler[data.method.toLowerCase()](data, callback);
         } else {
@@ -144,7 +144,7 @@ const handler = {
         }
     },
 
-    checks: (data, callback) => {
+    checks(data, callback) {
         if (acceptMethods.indexOf(data.method.toLowerCase()) !== -1) {
             check_handler[data.method](data, callback);
         } else {

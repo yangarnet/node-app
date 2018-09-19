@@ -6,7 +6,7 @@ const token_handler = require('./tokens');
 const check_handler = {
     // how to get rid of this call back hell?
     /*require chedk data: protocl, url, method, successcode, timeout secoonds */
-    post: (data, callback) => {
+    post(data, callback) {
         const { protocol, url, method, successCodes, timeoutSeconds } = data.payload;
         if (protocol && url && method && successCodes && timeoutSeconds) {
             // get the token from request header
@@ -17,7 +17,9 @@ const check_handler = {
                         if (!err && userData) {
                             const userChecks =
                                 //create new user check or just use existing checks
-                                typeof userData.checks === 'object' && userData.checks instanceof Array ? userData.checks : [];
+                                typeof userData.checks === 'object' && userData.checks instanceof Array
+                                    ? userData.checks
+                                    : [];
                             if (userChecks.length < config.maxChecks) {
                                 const checkId = helper.createRandomString(15);
                                 const checkObj = {
@@ -37,7 +39,11 @@ const check_handler = {
                                             if (!err) {
                                                 callback(200, checkObj, helper.CONTENT_TYPE.JSON);
                                             } else {
-                                                callback(500, { error: 'could not update user checks' }, helper.CONTENT_TYPE.JSON);
+                                                callback(
+                                                    500,
+                                                    { error: 'could not update user checks' },
+                                                    helper.CONTENT_TYPE.JSON
+                                                );
                                             }
                                         });
                                     } else {
@@ -61,7 +67,7 @@ const check_handler = {
     },
 
     /* take check id as query param*/
-    get: (data, callback) => {
+    get(data, callback) {
         const checkId = data.query.id;
         // we need token verification here as well.
         if (checkId) {
@@ -85,7 +91,7 @@ const check_handler = {
     },
 
     /* require data: checkId*/
-    delete: (data, callback) => {
+    delete(data, callback) {
         const checkId = data.query.id;
         // will need user verification as well
         _data.read('checks', checkId, (err, checkData) => {
@@ -106,13 +112,25 @@ const check_handler = {
                                             // delete the checks
                                             _data.delete('checks', checkId, (err, res) => {
                                                 if ((!err, res)) {
-                                                    callback(200, { success: 'delete user checks success' }, helper.CONTENT_TYPE.JSON);
+                                                    callback(
+                                                        200,
+                                                        { success: 'delete user checks success' },
+                                                        helper.CONTENT_TYPE.JSON
+                                                    );
                                                 } else {
-                                                    callback(500, { error: 'delete user checks fails' }, helper.CONTENT_TYPE.JSON);
+                                                    callback(
+                                                        500,
+                                                        { error: 'delete user checks fails' },
+                                                        helper.CONTENT_TYPE.JSON
+                                                    );
                                                 }
                                             });
                                         } else {
-                                            callback(500, { error: 'update user checks fails' }, helper.CONTENT_TYPE.JSON);
+                                            callback(
+                                                500,
+                                                { error: 'update user checks fails' },
+                                                helper.CONTENT_TYPE.JSON
+                                            );
                                         }
                                     });
                                 } else {
@@ -133,7 +151,7 @@ const check_handler = {
     },
 
     /* require data: checkId*/
-    put: (data, callback) => {
+    put(data, callback) {
         const { id: checkId, protocol, url, method, successCodes, timeoutSeconds } = data.payload;
         // will need user verification as well
         if (protocol && url && method && successCodes && timeoutSeconds) {

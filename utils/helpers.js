@@ -17,7 +17,7 @@ const helpers = {
         JSON: 'application/json'
     },
     // hashing a raw password
-    hash: rawPassword => {
+    hash(rawPassword) {
         if (typeof rawPassword === 'string' && rawPassword.length > 0) {
             // this is how you can has a raw password.
             // create sha256 has
@@ -30,7 +30,7 @@ const helpers = {
             return false;
         }
     },
-    createRandomString: len => {
+    createRandomString(len) {
         len = typeof len === 'number' && len > 0 ? len : false;
         if (len) {
             const characterSet = 'agsdgGYUHUJIKLJNBHryuifgfgVGJFHJGVHGH9876865HJGTRTRTV67726907HUIHJKHJH';
@@ -44,7 +44,7 @@ const helpers = {
         return '';
     },
     // parse
-    parseJsonToObject: str => {
+    parseJsonToObject(str) {
         try {
             const obj = JSON.parse(str);
             return obj;
@@ -52,7 +52,7 @@ const helpers = {
             return {};
         }
     },
-    isEmpty: obj => {
+    isEmpty(obj) {
         return (
             obj === undefined ||
             (typeof obj === 'string' && obj.length === 0) ||

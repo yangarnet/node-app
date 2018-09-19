@@ -9,11 +9,11 @@ const handler = require('./handler/Index');
 const routerConfig = {
     // add new routes to server html
     '': handler.index,
-    'account/create': handler.accountCreate,
-    'account/edit': handler.accountEdit,
-    'account/deleted': handler.accountDeleted,
-    'session/create': handler.sessionCreate,
-    'session/deleted': handler.sessionDeleted,
+    'account/create': handler.accountCreate, // user register
+    'account/edit': handler.accountEdit, // user eidt account detials
+    'account/deleted': handler.accountDeleted, // user account delete
+    'session/create': handler.sessionCreate, // user login
+    'session/deleted': handler.sessionDeleted, // user logout
     'checks/all': handler.checkList,
     'checks/create': handler.checkCreate,
     'checks/edit': handler.checkEdit,

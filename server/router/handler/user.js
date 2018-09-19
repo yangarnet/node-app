@@ -4,7 +4,7 @@ const token_handler = require('./tokens');
 
 const user_handler = {
     // only authenticated user can get their own data, not anyone else's data
-    get: (data, callback) => {
+    get(data, callback) {
         const { phone } = data.query;
         if (typeof phone === 'string' && phone.length > 0) {
             // verify the user token from the header, say from postman
@@ -34,7 +34,7 @@ const user_handler = {
     },
 
     /*payload: {firtname, lastname, phone, paswd, tosagreement}*/
-    post: (data, callback) => {
+    post(data, callback) {
         // all of these guys should be sting / boolean here
         const { firstname, lastname, phone, password, tosagreement } = data.payload;
         if (firstname && lastname && phone && password && tosagreement) {
@@ -87,7 +87,7 @@ const user_handler = {
         }
     },
     // only authenticated user can update
-    put: (data, callback) => {
+    put(data, callback) {
         const { phone, firstname, lastname, password } = data.payload;
         const token = typeof data.headers.token === 'string' ? data.headers.token : false;
         token_handler.verifyToken(token, phone, isValidToken => {
@@ -120,7 +120,7 @@ const user_handler = {
         });
     },
     // only authenticated user can delete
-    delete: (data, callback) => {
+    delete(data, callback) {
         const { phone } = data.query;
         const token = typeof data.headers.token === 'string' ? data.headers.token : false;
         token_handler.verifyToken(token, phone, isValidToken => {
