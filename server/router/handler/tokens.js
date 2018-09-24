@@ -33,12 +33,12 @@ const token_handler = {
         }
     },
     /*using phone number and password to generate token when user login*/
-    post(data, callback) {
+    async post(data) {
         const { phone, password } = data.payload;
         if (phone && password) {
-            // read the user profile to load user data
-            _data.read('users', phone, (err, data) => {
-                if (!err && data) {
+            try {
+                const data = await _data.read('users', phone);
+                if (data) {
                     const hashedPassword = helpers.hash(password);
                     // only allow valid user to create token
                     if (hashedPassword === data.password) {
@@ -51,22 +51,19 @@ const token_handler = {
                             phone,
                             expires
                         };
-                        _data.create('tokens', tokenId, token, err => {
-                            if (!err) {
-                                callback(200, token, helpers.CONTENT_TYPE.JSON);
-                            } else {
-                                callback(400, { errror: 'creating token error' }, helpers.CONTENT_TYPE.JSON);
-                            }
-                        });
-                    } else {
-                        callback(400, { error: 'user password does not match' }, helpers.CONTENT_TYPE.JSON);
+                        const statusCode = await _data.create('tokens', tokenId, token);
+                        return { statusCode, payload: token, contentType: helpers.CONTENT_TYPE.JSON };
                     }
-                } else {
-                    callback(err, data, helpers.CONTENT_TYPE.JSON);
                 }
-            });
+            } catch (error) {
+                return {
+                    statusCode: 400,
+                    payload: { error: 'phone or pass is missing' },
+                    contentType: helpers.CONTENT_TYPE.JSON
+                };
+            }
         } else {
-            callback(400, { error: 'phone or pass is missing' }, helpers.CONTENT_TYPE.JSON);
+            return { statusCode: 400, payload: { error: 'phone or pass is missing' }, contentType: helpers.CONTENT_TYPE.JSON };
         }
     },
     /*extend token expires, payload: {id, extend: boolean}*/
@@ -99,11 +96,7 @@ const token_handler = {
                 }
             });
         } else {
-            callback(
-                400,
-                { error: 'missing required tokenid and extend=true to update token' },
-                helpers.CONTENT_TYPE.JSON
-            );
+            callback(400, { error: 'missing required tokenid and extend=true to update token' }, helpers.CONTENT_TYPE.JSON);
         }
     },
     delete(data, callback) {

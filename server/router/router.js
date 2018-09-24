@@ -52,8 +52,8 @@ const router = (req, res) => {
         buffer += decoder.end();
 
         // select the handler base on the trimmed path
-        let selectedHandler =
-            typeof routerConfig[trimmedPath] !== 'undefined' ? routerConfig[trimmedPath] : handler.notFound;
+        let selectedHandler = typeof routerConfig[trimmedPath] !== 'undefined' ? routerConfig[trimmedPath] : handler.notFound;
+
         // cater the static public resource
         selectedHandler = trimmedPath.indexOf('public/') > -1 ? handler.public : selectedHandler;
 

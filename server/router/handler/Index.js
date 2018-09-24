@@ -136,9 +136,9 @@ const handler = {
         }
     },
 
-    tokens(data, callback) {
+    tokens(data) {
         if (acceptMethods.indexOf(data.method) > -1) {
-            token_handler[data.method.toLowerCase()](data, callback);
+            token_handler[data.method.toLowerCase()](data);
         } else {
             callback(404, { error: 'no match token handler found' }, helpers.CONTENT_TYPE.JSON);
         }
